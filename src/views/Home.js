@@ -9,27 +9,31 @@ export default function Home() {
         name : city,
         weather : "",
         temperature : 0,
+        icon : "",
 
     })
 
-    //ComponentDidMount : displaying Paris weather
+    //DISPLAYING PARIS WEATHER BY DEFAULT 
     useEffect (() => {
 
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
         .then(res => res.json())
         .then(res => {
-            // console.log("res:",res.main);
 
             setCityInfos({
                 name : "Paris",
                 weather : res.main.feels_like,
                 temperature : res.main.temp,
-
+                icon : res.weather[0].icon,
             })
+
+            let locationIcon = document.querySelector('.weather-icon');
+            const icon = cityInfos.icon;
+            locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
         })
     }, [])
 
-    //ComponentDidUpdate : displaying the user's search results
+    //DISPLAYING THE USER'S SEARCH RESULTS
     useEffect(() => {
 
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
@@ -38,14 +42,19 @@ export default function Home() {
 
             setCityInfos({
                 name : city.toUpperCase(),
-                weather : res.main.feels_like,
+                weather : res.weather[0].description,
+                icon : res.weather[0].icon,
                 temperature : res.main.temp,
             })
+
+            let locationIcon = document.querySelector('.weather-icon');
+            const icon = cityInfos.icon;
+            // locationIcon.innerHTML = <img src="icons/${icon}.png"></img>
+            locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
+
         })
 
     }, [city])
-
-
 
   return (
     <DivWrapper>
@@ -68,7 +77,12 @@ export default function Home() {
            />
         </form>
             <h2>City : {cityInfos.name}</h2>
-            <h2>Weather (Feels like): {cityInfos.weather} °C</h2>
+            <div className="weather-infos">
+            <h2>Weather: {cityInfos.weather} </h2>
+            <div class="weather-icon"><img src="icons/unknown.png"/></div>
+
+            </div>
+
             <h2>Temperature : {cityInfos.temperature} °C</h2>
         </GeneralContent>
 
@@ -113,6 +127,10 @@ const GeneralContent = styled.div`
         padding-left: 1.5%;
         font-size: 17px;
         background-color: white;
+    }
+
+    .weather-infos {
+        display: flex;
     }
 
 `
