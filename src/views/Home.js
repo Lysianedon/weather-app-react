@@ -1,10 +1,12 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled from 'styled-components' //Style 
 import { useState, useEffect, useContext } from "react";
 
 export default function Home() {
 
+    //City by default (on component mount)
     const [city, setCity] = useState("Paris");
+    //User's research
     const [cityInfos, setCityInfos] = useState({
         name : city,
         weather : "",
@@ -12,9 +14,17 @@ export default function Home() {
         icon : "",
     })
 
+    //Error message's display 
     const [displayError, setDisplayError] = useState("none");
 
-    //DISPLAYING PARIS WEATHER BY DEFAULT 
+    //User's favorites
+    const [favorites, setFavorites] = useState({
+        isFavorite : false,
+        id : [],
+    });
+
+
+    //DISPLAYING PARIS WEATHER BY DEFAULT :
     useEffect (() => {
 
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
@@ -35,7 +45,7 @@ export default function Home() {
         })
     }, [])
 
-    //DISPLAYING THE USER'S SEARCH RESULTS
+    //DISPLAYING THE USER'S SEARCH RESULTS :
     useEffect(() => {
 
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
@@ -46,7 +56,7 @@ export default function Home() {
             let searchbarValue = document.querySelector('#searchbar').value;
 
             //GUARD : IF THE USER HASN'T MADE A RESEARCH YET, THE UPDATE WONT BE MADE 
-            if (searchbarValue !== "") {
+            if (searchbarValue !== "" || searchbarValue !== " ") {
                  
                 //Removing the city's name from the searchbar
                 document.querySelector('#searchbar').value = "";
@@ -57,14 +67,15 @@ export default function Home() {
                     icon : res.weather[0].icon,
                     temperature : res.main.temp,
                 })
-    
+                
+                //Getting and displaying weather's icon :
                 let locationIcon = document.querySelector('.weather-icon');
                 const icon = cityInfos.icon;
                 locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
                 locationIcon.style.display = "initial";
             }
 
-            //Guard
+        //Guard
         }).catch(err => {
             console.log(err);
             setDisplayError("initial");
@@ -76,18 +87,43 @@ export default function Home() {
 
     }, [city])
 
+    //UPDATE USER'S FAVORITES LIST
+
+    useEffect(()=> {
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
+        .then(res => res.json())
+        .then(res => {
+
+            console.log("current city ID: ",res.name, res.id );
+
+            //If the user adds the city to its Favorites, the city's ID is added to his Favorites'list :
+            if (favorites.isFavorite) {
+                
+                console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
+                favorites.id.push(res.id)
+                console.log("id favoris ",favorites.id);
+
+            }
+
+            //Resetting the favorite state ;
+            favorites.isFavorite = false;
+            console.log("test etat favoris après ajout: ",favorites.isFavorite);
+
+        })
+
+    }, [])
+
   return (
     <DivWrapper>
         <GeneralContent className="infos">
-        <h1>HOME</h1>
+        {/* <h1>HOME</h1> */}
 
         <form action="" onSubmit={
             (e) => {
                 e.preventDefault();
                 const searchbarValue = document.querySelector('#searchbar').value;
-                // console.log(searchbarValue);
                 setCity(searchbarValue);
-                // console.log("test city; ",city);
             }
         }>
             <label htmlFor="searchbar">What's the weather like in... </label>
@@ -105,6 +141,13 @@ export default function Home() {
 
             <h2>Temperature : {cityInfos.temperature} °C</h2>
 
+            <button onClick={() => {
+
+                //Setting "favorite" state to True, so that it gets added to the list in the useEffect : 
+                favorites.isFavorite = true;
+                // console.log("state apres clic favoris : ", favorites);
+            }}>ADD TO FAVORITES</button>
+
             <p style={{display: `${displayError}`,}}>Error : Please enter a correct city name.</p>
         </GeneralContent>
 
@@ -112,6 +155,10 @@ export default function Home() {
   )
 }
 
+
+// ----------------------- Styled Components -----------------------
+
+//------------ DIV WRAPPER ------------
 const DivWrapper = styled.div`
 height: 73vh;
 background: rgb(9,9,121);
@@ -119,6 +166,7 @@ background: linear-gradient(0deg, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 54%);
 
 `
 
+//------------ CONTENT ----------------
 const GeneralContent = styled.div`
 
     width: 50%;
@@ -131,15 +179,16 @@ const GeneralContent = styled.div`
         color: white;
     }
 
+    //Weather infos
     h2 {
         color: white;
     }
 
+    //Searchbar Label
     label {
         display: block;
-        /* text-align: center; */
     }
-
+    //Searchbar + submit button
     input {
         width: 80%;
         border: 1px solid black;
@@ -155,6 +204,7 @@ const GeneralContent = styled.div`
         display: flex;
     }
 
+    //Error message
     p {
         text-align: center;
         color: white;
