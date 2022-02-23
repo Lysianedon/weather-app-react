@@ -12,6 +12,8 @@ export default function Home() {
         icon : "",
     })
 
+    const [displayError, setDisplayError] = useState("none");
+
     //DISPLAYING PARIS WEATHER BY DEFAULT 
     useEffect (() => {
 
@@ -40,11 +42,15 @@ export default function Home() {
         .then(res => res.json())
         .then(res => {
 
-            const searchbarValue = document.querySelector('#searchbar').value;
+            //Getting the user's research from the search bar:
+            let searchbarValue = document.querySelector('#searchbar').value;
 
-            //IF THE USER HASN'T MADE A RESEARCH YET, THE UPDATE WONT BE MADE 
+            //GUARD : IF THE USER HASN'T MADE A RESEARCH YET, THE UPDATE WONT BE MADE 
             if (searchbarValue !== "") {
-                
+                 
+                //Removing the city's name from the searchbar
+                document.querySelector('#searchbar').value = "";
+
                 setCityInfos({
                     name : city.toUpperCase(),
                     weather : res.weather[0].description,
@@ -58,6 +64,14 @@ export default function Home() {
                 locationIcon.style.display = "initial";
             }
 
+            //Guard
+        }).catch(err => {
+            console.log(err);
+            setDisplayError("initial");
+            
+            setTimeout(() => {
+                setDisplayError("none");     
+            }, 1500);
         })
 
     }, [city])
@@ -90,6 +104,8 @@ export default function Home() {
             </div>
 
             <h2>Temperature : {cityInfos.temperature} °C</h2>
+
+            <p style={{display: `${displayError}`,}}>Error : Please enter a correct city name.</p>
         </GeneralContent>
 
     </DivWrapper>
@@ -137,6 +153,15 @@ const GeneralContent = styled.div`
 
     .weather-infos {
         display: flex;
+    }
+
+    p {
+        text-align: center;
+        color: white;
+        background-color: #111111;
+        font-size: 20px;
+        font-weight: 900;
+        margin-left: 16%;
     }
 
 `
