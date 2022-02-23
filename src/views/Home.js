@@ -68,8 +68,8 @@ export default function Home() {
            />
         </form>
             <h3>City : {cityInfos.name}</h3>
-            <h3>Weather : {cityInfos.weather}</h3>
-            <h3>Temperature : {cityInfos.temperature}</h3>
+            <h3>Weather (Feels like): {cityInfos.weather} °C</h3>
+            <h3>Temperature : {cityInfos.temperature} °C</h3>
         </GeneralContent>
 
     </DivWrapper>
