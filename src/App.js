@@ -6,6 +6,9 @@ import Favorites from './views/Favorites'
 import styled from "styled-components"; //Style library
 import logo from './img/weatherapp3.png'
 
+var moment = require('moment'); // require
+moment().format(); 
+
 
 export default function App() {
   return (
@@ -24,8 +27,8 @@ export default function App() {
       </Switch>
 
       <StyledFooter>
-        <h4> Made by Lysiane </h4>
-        <h4>Today is : </h4>
+        <h4> &copy; <a href="https://github.com/Lysianedon" target="_blank" rel="noopener noreferrer"> Made by Lysiane</a></h4>
+        <h4>{moment().format(" [Today is] MMMM Do, YY")} </h4>
       </StyledFooter>
     </BrowserRouter>
   )
@@ -33,8 +36,9 @@ export default function App() {
 
 
 // ----------------------- Styled Components -----------------------
-const StyledNav = styled.nav`
 
+//  --------------- NAV  ---------------
+const StyledNav = styled.nav`
   display: flex;
   justify-content: space-between;
   padding-right: 3%;
@@ -45,7 +49,7 @@ const StyledNav = styled.nav`
 
   img {
     width: 16vw;
-    height: 46vh;
+    height: 44vh;
     margin-top: -8.5%;
     margin-left: -3%;
   }
@@ -56,7 +60,6 @@ const StyledNav = styled.nav`
     padding-top: 2%;
   }
 
-  
   .link {
     color: white;
     text-decoration: none;
@@ -66,16 +69,23 @@ const StyledNav = styled.nav`
   .favorites {
     margin-left: 1em;
   }
-
 `
+// --------------- FOOTER ---------------
 
 const StyledFooter = styled.footer `
-
 color: white;
 display: flex;
 justify-content: space-around;
 background-color: #111111;
+
+
+a {
+    text-decoration: none;
+    color: white;
+  }
+
 `
+
 
 
 
