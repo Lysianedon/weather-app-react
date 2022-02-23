@@ -18,7 +18,7 @@ export default function Home() {
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
         .then(res => res.json())
         .then(res => {
-            console.log("res:",res.main);
+            // console.log("res:",res.main);
 
             setCityInfos({
                 name : "Paris",
@@ -30,16 +30,26 @@ export default function Home() {
     }, [])
 
     //ComponentDidUpdate : displaying the user's search results
-    
+
   return (
     <DivWrapper>
         <GeneralContent className="infos">
         <h1>HOME</h1>
 
-        <form action="">
-            <label htmlFor="searchbar">What's the weather like in :</label>
+        <form action="" onSubmit={
+            (e) => {
+                e.preventDefault();
+                const searchbarValue = document.querySelector('#searchbar').value;
+                // console.log(searchbarValue);
+                setCity(searchbarValue);
+                // console.log("test city; ",city);
+            }
+        }>
+            <label htmlFor="searchbar">What's the weather like in... </label>
             <input type="search" name="searchbar" id="searchbar" placeholder='Belo Horizonte, Sydney...'/>
-            <input type="submit" value="SEARCH" />
+            <input type="submit" 
+            value="SEARCH" 
+           />
         </form>
             <h3>City : {cityInfos.name}</h3>
             <h3>Weather : {cityInfos.weather}</h3>
