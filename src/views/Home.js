@@ -67,9 +67,9 @@ export default function Home() {
             value="SEARCH" 
            />
         </form>
-            <h3>City : {cityInfos.name}</h3>
-            <h3>Weather (Feels like): {cityInfos.weather} °C</h3>
-            <h3>Temperature : {cityInfos.temperature} °C</h3>
+            <h2>City : {cityInfos.name}</h2>
+            <h2>Weather (Feels like): {cityInfos.weather} °C</h2>
+            <h2>Temperature : {cityInfos.temperature} °C</h2>
         </GeneralContent>
 
     </DivWrapper>
@@ -95,7 +95,7 @@ const GeneralContent = styled.div`
         color: white;
     }
 
-    h3 {
+    h2 {
         color: white;
     }
 
