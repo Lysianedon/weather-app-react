@@ -1,7 +1,36 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useState, useEffect, useContext } from "react";
 
 export default function Home() {
+
+    const [city, setCity] = useState("Paris");
+    const [cityInfos, setCityInfos] = useState({
+        name : city,
+        weather : "",
+        temperature : 0,
+
+    })
+
+    //ComponentDidMount : displaying Paris weather
+    useEffect (() => {
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
+        .then(res => res.json())
+        .then(res => {
+            console.log("res:",res.main);
+
+            setCityInfos({
+                name : "Paris",
+                weather : res.main.feels_like,
+                temperature : res.main.temp,
+
+            })
+        })
+    }, [])
+
+    //ComponentDidUpdate : displaying the user's search results
+    
   return (
     <DivWrapper>
         <GeneralContent className="infos">
@@ -12,9 +41,9 @@ export default function Home() {
             <input type="search" name="searchbar" id="searchbar" placeholder='Belo Horizonte, Sydney...'/>
             <input type="submit" value="SEARCH" />
         </form>
-            <h3>Ville : </h3>
-            <h3>Temps : </h3>
-            <h3>Température : </h3>
+            <h3>City : {cityInfos.name}</h3>
+            <h3>Weather : {cityInfos.weather}</h3>
+            <h3>Temperature : {cityInfos.temperature}</h3>
         </GeneralContent>
 
     </DivWrapper>
@@ -37,6 +66,10 @@ const GeneralContent = styled.div`
         text-align: center;
         margin: 0;
         padding: 0;
+        color: white;
+    }
+
+    h3 {
         color: white;
     }
 
