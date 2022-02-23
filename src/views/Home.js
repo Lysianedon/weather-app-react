@@ -10,7 +10,6 @@ export default function Home() {
         weather : "",
         temperature : 0,
         icon : "",
-
     })
 
     //DISPLAYING PARIS WEATHER BY DEFAULT 
@@ -30,6 +29,7 @@ export default function Home() {
             let locationIcon = document.querySelector('.weather-icon');
             const icon = cityInfos.icon;
             locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
+            locationIcon.style.display = "none";
         })
     }, [])
 
@@ -40,17 +40,23 @@ export default function Home() {
         .then(res => res.json())
         .then(res => {
 
-            setCityInfos({
-                name : city.toUpperCase(),
-                weather : res.weather[0].description,
-                icon : res.weather[0].icon,
-                temperature : res.main.temp,
-            })
+            const searchbarValue = document.querySelector('#searchbar').value;
 
-            let locationIcon = document.querySelector('.weather-icon');
-            const icon = cityInfos.icon;
-            // locationIcon.innerHTML = <img src="icons/${icon}.png"></img>
-            locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
+            //IF THE USER HASN'T MADE A RESEARCH YET, THE UPDATE WONT BE MADE 
+            if (searchbarValue !== "") {
+                
+                setCityInfos({
+                    name : city.toUpperCase(),
+                    weather : res.weather[0].description,
+                    icon : res.weather[0].icon,
+                    temperature : res.main.temp,
+                })
+    
+                let locationIcon = document.querySelector('.weather-icon');
+                const icon = cityInfos.icon;
+                locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
+                locationIcon.style.display = "initial";
+            }
 
         })
 
@@ -91,7 +97,7 @@ export default function Home() {
 }
 
 const DivWrapper = styled.div`
-height: 71vh;
+height: 73vh;
 background: rgb(9,9,121);
 background: linear-gradient(0deg, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 54%);
 
