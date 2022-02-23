@@ -30,6 +30,22 @@ export default function Home() {
     }, [])
 
     //ComponentDidUpdate : displaying the user's search results
+    useEffect(() => {
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
+        .then(res => res.json())
+        .then(res => {
+
+            setCityInfos({
+                name : city.toUpperCase(),
+                weather : res.main.feels_like,
+                temperature : res.main.temp,
+            })
+        })
+
+    }, [city])
+
+
 
   return (
     <DivWrapper>
