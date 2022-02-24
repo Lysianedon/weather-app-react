@@ -77,7 +77,15 @@ export default function Home() {
 
                     console.log("current city ID: ",res.name, res.id );
                     console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
-     
+
+                    console.log("id favoris ",favorites.id);
+
+                    //Resetting the favorite state
+                    setFavorites({
+                        isFavorite : false,
+                        id : [...favorites.id],
+                    })
+                    //If the city is already in the user's favorites, a notification is displayed
                     if (favorites.id.includes(res.id)) {
                         
                         document.querySelector('.error').style.display = "initial";
