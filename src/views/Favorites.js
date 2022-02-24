@@ -1,18 +1,28 @@
 import React from 'react'
-import { useState, useEffect, useContext } from "react";
-
+import { useContext, useEffect, useState, createContext } from 'react'
+//UseContext allContexts : 
+import {AllContexts} from '../App'
+import styled from "styled-components"; //Style library
+import Card from '../components/Card';
 
 
 export default function Favorites() {
+
+  const allContexts = useContext(AllContexts);
+    
+  useEffect(() => {
+      
+      console.log("test context: ", allContexts);
+
+  }, [])
+
   return (
     <div>
 
       <h1>FAVORITES</h1>
 
-      <h3></h3>
-      <h3></h3>
-      <h3></h3>
-      <h3></h3>
+      <Card/>
+
 
 
 
