@@ -1,8 +1,18 @@
 import React from 'react'
 import styled from 'styled-components' //Style 
 import { useState, useEffect, useContext } from "react";
+import { createContext } from 'react';
+
+export const FavoritesContext = createContext();
+
 
 export default function Home() {
+
+    const favoritesContextObject = {
+        id : favorites.id,
+        isFavorite : favorites.isFavorite,
+        setFavorites : setFavorites,
+    }
 
     //City by default (on component mount)
     const [city, setCity] = useState("Paris");
@@ -107,14 +117,6 @@ export default function Home() {
                         }, 1500);
                     }
                 }
-
-                // setFavorites({
-                //     isFavorite : false,
-                //     id : [...favorites.id],
-                // })
-
-                //Resetting the favorite state ;
-                console.log("test etat favoris après ajout: ",favorites.isFavorite);
                 
                 //Getting and displaying weather's icon :
                 let locationIcon = document.querySelector('.weather-icon');
@@ -137,48 +139,50 @@ export default function Home() {
 
 
   return (
-    <DivWrapper>
-        <GeneralContent className="infos">
-        {/* <h1>HOME</h1> */}
+    <FavoritesContext.Provider value={favoritesContextObject}>
+        <DivWrapper>
+            <GeneralContent className="infos">
+            {/* <h1>HOME</h1> */}
 
-        <form action="" onSubmit={
-            (e) => {
-                e.preventDefault();
-                const searchbarValue = document.querySelector('#searchbar').value;
-                setCity(searchbarValue);
-            }
-        }>
-            <label htmlFor="searchbar">What's the weather like in... </label>
-            <input type="search" name="searchbar" id="searchbar" placeholder='Belo Horizonte, Sydney...'/>
-            <input type="submit" 
-            value="SEARCH" 
-           />
-        </form>
-            <h2>City : {cityInfos.name}</h2>
-            <div className="weather-infos">
-            <h2>Weather: {cityInfos.weather} </h2>
-            <div class="weather-icon"><img src="icons/unknown.png"/></div>
+            <form action="" onSubmit={
+                (e) => {
+                    e.preventDefault();
+                    const searchbarValue = document.querySelector('#searchbar').value;
+                    setCity(searchbarValue);
+                }
+            }>
+                <label htmlFor="searchbar">What's the weather like in... </label>
+                <input type="search" name="searchbar" id="searchbar" placeholder='Belo Horizonte, Sydney...'/>
+                <input type="submit" 
+                value="SEARCH" 
+            />
+            </form>
+                <h2>City : {cityInfos.name}</h2>
+                <div className="weather-infos">
+                <h2>Weather: {cityInfos.weather} </h2>
+                <div class="weather-icon"><img src="icons/unknown.png"/></div>
 
-            </div>
+                </div>
 
-            <h2>Temperature : {cityInfos.temperature} °C</h2>
+                <h2>Temperature : {cityInfos.temperature} °C</h2>
 
-            <button onClick={(e) => {
-                e.preventDefault();
-                //Setting "favorite" state to True, so that it gets added to the list in the useEffect : 
-                setFavorites({
-                    isFavorite : true,
-                    id : favorites.id,
-                })
-            }}>ADD TO FAVORITES</button>
+                <button onClick={(e) => {
+                    e.preventDefault();
+                    //Setting "favorite" state to True, so that it gets added to the list in the useEffect : 
+                    setFavorites({
+                        isFavorite : true,
+                        id : favorites.id,
+                    })
+                }}>ADD TO FAVORITES</button>
 
-            {/* HIDDEN NOTIFICATION MESSAGES */}
-            <p style={{display: `${displayError}`,}}>Error : Please enter a correct city name.</p>
-            <p className="error" style={{display: "none",}}>This city is already in your favorites</p>
-            <p className="success" style={{display: "none",}}>Added to your favorites !</p>
-        </GeneralContent>
+                {/* HIDDEN NOTIFICATION MESSAGES */}
+                <p style={{display: `${displayError}`,}}>Error : Please enter a correct city name.</p>
+                <p className="error" style={{display: "none",}}>This city is already in your favorites</p>
+                <p className="success" style={{display: "none",}}>Added to your favorites !</p>
+            </GeneralContent>
 
-    </DivWrapper>
+        </DivWrapper>
+    </FavoritesContext.Provider>
   )
 }
 
