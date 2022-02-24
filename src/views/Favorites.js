@@ -17,7 +17,7 @@ export default function Favorites() {
   }, [])
 
   return (
-    <div>
+    <StyledFavorites>
 
       <h1>FAVORITES</h1>
 
@@ -26,6 +26,12 @@ export default function Favorites() {
 
 
 
-    </div>
+    </StyledFavorites>
   )
 }
+
+const StyledFavorites = styled.div`
+
+height: 73vh;
+
+`
