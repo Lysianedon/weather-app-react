@@ -5,35 +5,86 @@ import Home from './views/Home'
 import Favorites from './views/Favorites'
 import styled from "styled-components"; //Style library
 import logo from './img/weatherapp3.png'
+import Card from './components/Card';
 
 var moment = require('moment'); // require
 moment().format(); 
 
+export const AllContexts = createContext();
 
 export default function App() {
+
+      //City by default (on component mount)
+      const [city, setCity] = useState("Paris");
+      //User's research
+      const [cityInfos, setCityInfos] = useState({
+          name : city,
+          weather : "",
+          temperature : 0,
+          icon : "",
+      })
+  
+      //Error message's display 
+      const [displayError, setDisplayError] = useState("none");
+      const [displayFavorites, setDisplayFavorites] = useState({
+          display : "none",
+  
+      });
+  
+      //User's favorites
+      const [favorites, setFavorites] = useState({
+          isFavorite : false,
+          id : [],
+      });
+  
+      const favoritesContextObject = {
+          id : favorites.id,
+          isFavorite : favorites.isFavorite,
+          setFavorites : setFavorites,
+      }
+
+      const allValues = {
+        cityInfos : cityInfos,
+        setCityInfos : setCityInfos,
+        displayError : displayError,
+        setDisplayError : setDisplayError,
+        displayFavorites : displayFavorites,
+        setDisplayFavorites : setDisplayFavorites,
+        favorites : favorites,
+        setFavorites : setFavorites,
+        id : favorites.id,
+        isFavorite : favorites.isFavorite,
+        city : city,
+        icon : cityInfos.icon,
+        
+      }
+
   return (
-    <BrowserRouter>
-      <StyledNav>
-        <img src={logo} alt="logo weather-app" srcset="" />
-        <div className="links">
-        <li><Link to='/' className='link '>HOME</Link></li>
-        <li><Link to='/favorites' className='link favorites'>FAVORITES</Link></li>
-        </div>
-      </StyledNav>
+    <AllContexts.Provider value={allValues}>
+      <BrowserRouter>
+        <StyledNav>
+          <img src={logo} alt="logo weather-app" srcset="" />
+          <div className="links">
+          <li><Link to='/' className='link '>HOME</Link></li>
+          <li><Link to='/favorites' className='link favorites'>FAVORITES</Link></li>
+          {/* <li><Link to='/card' className='link'>CARD</Link></li> */}
+          </div>
+        </StyledNav>
 
-      <Switch>
-        <Route exact path='/' component={Home}></Route>
-        <Route exact path='/favorites' component={Favorites}></Route>
-      </Switch>
+        <Switch>
+          <Route exact path='/' component={Home}></Route>
+          <Route exact path='/favorites' component={Favorites}></Route>
+          {/* <Route exact path='/card' component={Card}></Route> */}
+        </Switch>
 
-      <StyledFooter>
-        <h4> &copy; <a href="https://github.com/Lysianedon" target="_blank" rel="noopener noreferrer"> Made by Lysiane</a></h4>
-        <h4>{moment().format(" [Today is] MMMM Do, YY")} </h4>
-      </StyledFooter>
-    </BrowserRouter>
+        <StyledFooter>
+          <h4> &copy; <a href="https://github.com/Lysianedon" target="_blank" rel="noopener noreferrer"> Made by Lysiane</a></h4>
+          <h4>{moment().format(" [Today is] MMMM Do, YY")} </h4>
+        </StyledFooter>
+      </BrowserRouter>
+    </AllContexts.Provider>
   )
 }
-
 
 // ----------------------- Styled Components -----------------------
 

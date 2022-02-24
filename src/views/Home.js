@@ -1,51 +1,52 @@
 import React from 'react'
 import styled from 'styled-components' //Style 
-import { useState, useEffect, useContext } from "react";
-import { createContext } from 'react';
-
-export const FavoritesContext = createContext();
+import { useContext, useEffect, useState, createContext} from 'react'
+//UseContext AllContexts : 
+import {AllContexts} from '../App'
 
 
 export default function Home() {
 
-    const favoritesContextObject = {
-        id : favorites.id,
-        isFavorite : favorites.isFavorite,
-        setFavorites : setFavorites,
-    }
+    const allContexts = useContext(AllContexts);
 
-    //City by default (on component mount)
-    const [city, setCity] = useState("Paris");
-    //User's research
-    const [cityInfos, setCityInfos] = useState({
-        name : city,
-        weather : "",
-        temperature : 0,
-        icon : "",
-    })
+    // //City by default (on component mount)
+    // const [city, setCity] = useState("Paris");
+    // //User's research
+    // const [cityInfos, setCityInfos] = useState({
+    //     name : city,
+    //     weather : "",
+    //     temperature : 0,
+    //     icon : "",
+    // })
 
-    //Error message's display 
-    const [displayError, setDisplayError] = useState("none");
-    const [displayFavorites, setDisplayFavorites] = useState({
-        display : "none",
+    // //Error message's display 
+    // const [displayError, setDisplayError] = useState("none");
+    // const [displayFavorites, setDisplayFavorites] = useState({
+    //     display : "none",
 
-    });
+    // });
 
-    //User's favorites
-    const [favorites, setFavorites] = useState({
-        isFavorite : false,
-        id : [],
-    });
+    // //User's favorites
+    // const [favorites, setFavorites] = useState({
+    //     isFavorite : false,
+    //     id : [],
+    // });
+
+    // const favoritesContextObject = {
+    //     id : favorites.id,
+    //     isFavorite : favorites.isFavorite,
+    //     setFavorites : setFavorites,
+    // }
 
 
     //DISPLAYING PARIS WEATHER BY DEFAULT :
     useEffect (() => {
 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${allContexts.city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
         .then(res => res.json())
         .then(res => {
 
-            setCityInfos({
+            allContexts.setCityInfos({
                 name : "Paris",
                 weather : res.main.feels_like,
                 temperature : res.main.temp,
@@ -53,8 +54,8 @@ export default function Home() {
             })
 
             let locationIcon = document.querySelector('.weather-icon');
-            const icon = cityInfos.icon;
-            locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
+            const icon = allContexts.icon;
+            locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${allContexts.icon}.png">`
             locationIcon.style.display = "none";
         })
     }, [])
@@ -62,7 +63,7 @@ export default function Home() {
     //DISPLAYING THE USER'S SEARCH RESULTS + UPDATE USER'S FAVORITES LIST
     useEffect(() => {
 
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${allContexts.city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
         .then(res => res.json())
         .then(res => {
 
@@ -75,28 +76,28 @@ export default function Home() {
                 //Removing the city's name from the searchbar
                 document.querySelector('#searchbar').value = "";
 
-                setCityInfos({
-                    name : city.toUpperCase(),
+                allContexts.setCityInfos({
+                    name : allContexts.city.toUpperCase(),
                     weather : res.weather[0].description,
                     icon : res.weather[0].icon,
                     temperature : res.main.temp,
                 })
                 
                 //If the user adds the city to its Favorites, the city's ID is added to his Favorites'list :
-                if (favorites.isFavorite) {
+                if (allContexts.favorites.isFavorite) {
 
-                    console.log("current city ID: ",res.name, res.id );
-                    console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
+                    // console.log("current city ID: ",res.name, res.id );
+                    // console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
 
-                    console.log("id favoris ",favorites.id);
+                    // console.log("id favoris ",favorites.id);
 
                     //Resetting the favorite state
-                    setFavorites({
+                    allContexts.setFavorites({
                         isFavorite : false,
-                        id : [...favorites.id],
+                        id : [...allContexts.favorites.id],
                     })
                     //If the city is already in the user's favorites, a notification is displayed
-                    if (favorites.id.includes(res.id)) {
+                    if (allContexts.favorites.id.includes(res.id)) {
                         
                         document.querySelector('.error').style.display = "initial";
                         setTimeout(() => {
@@ -105,10 +106,10 @@ export default function Home() {
 
                     } else {
 
-                        console.log("id favoris ",favorites.id);
-                        setFavorites({
+                        // console.log("id favoris ",favorites.id);
+                        allContexts.setFavorites({
                             isFavorite : false,
-                            id : [...favorites.id, res.id],
+                            id : [...allContexts.favorites.id, res.id],
                         })
 
                         document.querySelector('.success').style.display = "initial";
@@ -120,7 +121,7 @@ export default function Home() {
                 
                 //Getting and displaying weather's icon :
                 let locationIcon = document.querySelector('.weather-icon');
-                const icon = cityInfos.icon;
+                const icon = allContexts.cityInfos.icon;
                 locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
                 locationIcon.style.display = "initial";
             }
@@ -128,18 +129,19 @@ export default function Home() {
         //Guard
         }).catch(err => {
             console.log(err);
-            setDisplayError("initial");
+            allContexts.setDisplayError("initial");
             
             setTimeout(() => {
-                setDisplayError("none");     
+                allContexts.setDisplayError("none");     
             }, 1500);
         })
 
-    }, [city,favorites])
+    }, [allContexts.city,allContexts.favorites])
+
 
 
   return (
-    <FavoritesContext.Provider value={favoritesContextObject}>
+
         <DivWrapper>
             <GeneralContent className="infos">
             {/* <h1>HOME</h1> */}
@@ -148,7 +150,7 @@ export default function Home() {
                 (e) => {
                     e.preventDefault();
                     const searchbarValue = document.querySelector('#searchbar').value;
-                    setCity(searchbarValue);
+                    allContexts.setCity(searchbarValue);
                 }
             }>
                 <label htmlFor="searchbar">What's the weather like in... </label>
@@ -157,35 +159,33 @@ export default function Home() {
                 value="SEARCH" 
             />
             </form>
-                <h2>City : {cityInfos.name}</h2>
+                <h2>City : {allContexts.cityInfos.name}</h2>
                 <div className="weather-infos">
-                <h2>Weather: {cityInfos.weather} </h2>
-                <div class="weather-icon"><img src="icons/unknown.png"/></div>
+                <h2>Weather: {allContexts.cityInfos.weather} </h2>
+                <div class="weather-icon"><img src="icons/unknown.png" alt="weather-icon"/></div>
 
                 </div>
 
-                <h2>Temperature : {cityInfos.temperature} °C</h2>
+                <h2>Temperature : {allContexts.cityInfos.temperature} °C</h2>
 
                 <button onClick={(e) => {
                     e.preventDefault();
                     //Setting "favorite" state to True, so that it gets added to the list in the useEffect : 
-                    setFavorites({
+                    allContexts.setFavorites({
                         isFavorite : true,
-                        id : favorites.id,
+                        id : allContexts.favorites.id,
                     })
                 }}>ADD TO FAVORITES</button>
 
                 {/* HIDDEN NOTIFICATION MESSAGES */}
-                <p style={{display: `${displayError}`,}}>Error : Please enter a correct city name.</p>
+                <p style={{display: `${allContexts.displayError}`,}}>Error : Please enter a correct city name.</p>
                 <p className="error" style={{display: "none",}}>This city is already in your favorites</p>
                 <p className="success" style={{display: "none",}}>Added to your favorites !</p>
             </GeneralContent>
 
         </DivWrapper>
-    </FavoritesContext.Provider>
   )
 }
-
 
 // ----------------------- Styled Components -----------------------
 
