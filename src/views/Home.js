@@ -84,22 +84,27 @@ export default function Home() {
                         setTimeout(() => {
                             document.querySelector('.error').style.display = "none";
                         }, 1500);
+
                     } else {
 
                         console.log("id favoris ",favorites.id);
-
                         setFavorites({
                             isFavorite : false,
                             id : [...favorites.id, res.id],
                         })
-                        
+
                         document.querySelector('.success').style.display = "initial";
                         setTimeout(() => {
                             document.querySelector('.success').style.display = "none";
                         }, 1500);
                     }
                 }
-    
+
+                // setFavorites({
+                //     isFavorite : false,
+                //     id : [...favorites.id],
+                // })
+
                 //Resetting the favorite state ;
                 console.log("test etat favoris après ajout: ",favorites.isFavorite);
                 
@@ -150,7 +155,8 @@ export default function Home() {
 
             <h2>Temperature : {cityInfos.temperature} °C</h2>
 
-            <button onClick={() => {
+            <button onClick={(e) => {
+                e.preventDefault();
                 //Setting "favorite" state to True, so that it gets added to the list in the useEffect : 
                 setFavorites({
                     isFavorite : true,
