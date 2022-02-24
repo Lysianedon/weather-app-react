@@ -16,6 +16,10 @@ export default function Home() {
 
     //Error message's display 
     const [displayError, setDisplayError] = useState("none");
+    const [displayFavorites, setDisplayFavorites] = useState({
+        display : "none",
+
+    });
 
     //User's favorites
     const [favorites, setFavorites] = useState({
@@ -45,7 +49,7 @@ export default function Home() {
         })
     }, [])
 
-    //DISPLAYING THE USER'S SEARCH RESULTS :
+    //DISPLAYING THE USER'S SEARCH RESULTS + UPDATE USER'S FAVORITES LIST
     useEffect(() => {
 
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
@@ -68,6 +72,37 @@ export default function Home() {
                     temperature : res.main.temp,
                 })
                 
+                //If the user adds the city to its Favorites, the city's ID is added to his Favorites'list :
+                if (favorites.isFavorite) {
+
+                    console.log("current city ID: ",res.name, res.id );
+                    console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
+     
+                    if (favorites.id.includes(res.id)) {
+                        
+                        document.querySelector('.error').style.display = "initial";
+                        setTimeout(() => {
+                            document.querySelector('.error').style.display = "none";
+                        }, 1500);
+                    } else {
+
+                        console.log("id favoris ",favorites.id);
+
+                        setFavorites({
+                            isFavorite : false,
+                            id : [...favorites.id, res.id],
+                        })
+                        
+                        document.querySelector('.success').style.display = "initial";
+                        setTimeout(() => {
+                            document.querySelector('.success').style.display = "none";
+                        }, 1500);
+                    }
+                }
+    
+                //Resetting the favorite state ;
+                console.log("test etat favoris après ajout: ",favorites.isFavorite);
+                
                 //Getting and displaying weather's icon :
                 let locationIcon = document.querySelector('.weather-icon');
                 const icon = cityInfos.icon;
@@ -85,34 +120,8 @@ export default function Home() {
             }, 1500);
         })
 
-    }, [city])
+    }, [city,favorites])
 
-    //UPDATE USER'S FAVORITES LIST
-
-    useEffect(()=> {
-
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
-        .then(res => res.json())
-        .then(res => {
-
-            console.log("current city ID: ",res.name, res.id );
-
-            //If the user adds the city to its Favorites, the city's ID is added to his Favorites'list :
-            if (favorites.isFavorite) {
-                
-                console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
-                favorites.id.push(res.id)
-                console.log("id favoris ",favorites.id);
-
-            }
-
-            //Resetting the favorite state ;
-            favorites.isFavorite = false;
-            console.log("test etat favoris après ajout: ",favorites.isFavorite);
-
-        })
-
-    }, [])
 
   return (
     <DivWrapper>
@@ -142,13 +151,17 @@ export default function Home() {
             <h2>Temperature : {cityInfos.temperature} °C</h2>
 
             <button onClick={() => {
-
                 //Setting "favorite" state to True, so that it gets added to the list in the useEffect : 
-                favorites.isFavorite = true;
-                // console.log("state apres clic favoris : ", favorites);
+                setFavorites({
+                    isFavorite : true,
+                    id : favorites.id,
+                })
             }}>ADD TO FAVORITES</button>
 
+            {/* HIDDEN NOTIFICATION MESSAGES */}
             <p style={{display: `${displayError}`,}}>Error : Please enter a correct city name.</p>
+            <p className="error" style={{display: "none",}}>This city is already in your favorites</p>
+            <p className="success" style={{display: "none",}}>Added to your favorites !</p>
         </GeneralContent>
 
     </DivWrapper>
