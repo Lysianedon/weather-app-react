@@ -12,16 +12,15 @@ export default function Favorites() {
     
   useEffect(() => {
       
-      console.log("test context: ", allContexts);
+      console.log("test localStorage: ", allContexts.listFavorites);
 
-  }, [])
+  }, [allContexts.city,allContexts.favorites, allContexts.cityInfos])
 
   return (
     <StyledFavorites>
 
       <h1>FAVORITES</h1>
 
-      <Card/>
 
 
 
