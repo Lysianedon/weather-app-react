@@ -55,7 +55,9 @@ export default function App() {
         id : favorites.id,
         isFavorite : favorites.isFavorite,
         city : city,
+        setCity :setCity,
         icon : cityInfos.icon,
+        listFavorites : localStorage.getItem("listFavorites"),
         
       }
 
