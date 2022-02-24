@@ -9,36 +9,6 @@ export default function Home() {
 
     const allContexts = useContext(AllContexts);
 
-    // //City by default (on component mount)
-    // const [city, setCity] = useState("Paris");
-    // //User's research
-    // const [cityInfos, setCityInfos] = useState({
-    //     name : city,
-    //     weather : "",
-    //     temperature : 0,
-    //     icon : "",
-    // })
-
-    // //Error message's display 
-    // const [displayError, setDisplayError] = useState("none");
-    // const [displayFavorites, setDisplayFavorites] = useState({
-    //     display : "none",
-
-    // });
-
-    // //User's favorites
-    // const [favorites, setFavorites] = useState({
-    //     isFavorite : false,
-    //     id : [],
-    // });
-
-    // const favoritesContextObject = {
-    //     id : favorites.id,
-    //     isFavorite : favorites.isFavorite,
-    //     setFavorites : setFavorites,
-    // }
-
-
     //DISPLAYING PARIS WEATHER BY DEFAULT :
     useEffect (() => {
 
@@ -86,11 +56,6 @@ export default function Home() {
                 //If the user adds the city to its Favorites, the city's ID is added to his Favorites'list :
                 if (allContexts.favorites.isFavorite) {
 
-                    // console.log("current city ID: ",res.name, res.id );
-                    // console.log("test etat favoris avant nouvel ajout: ",favorites.isFavorite);
-
-                    // console.log("id favoris ",favorites.id);
-
                     //Resetting the favorite state
                     allContexts.setFavorites({
                         isFavorite : false,
@@ -112,6 +77,9 @@ export default function Home() {
                             id : [...allContexts.favorites.id, res.id],
                         })
 
+                        //Adding it to the localStorage,
+                        localStorage.setItem("listFavorites", allContexts.id);
+
                         document.querySelector('.success').style.display = "initial";
                         setTimeout(() => {
                             document.querySelector('.success').style.display = "none";
@@ -125,7 +93,9 @@ export default function Home() {
                 locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
                 locationIcon.style.display = "initial";
             }
-
+        
+            localStorage.setItem("listFavorites", allContexts.id);
+            
         //Guard
         }).catch(err => {
             console.log(err);
@@ -139,12 +109,10 @@ export default function Home() {
     }, [allContexts.city,allContexts.favorites])
 
 
-
   return (
 
         <DivWrapper>
             <GeneralContent className="infos">
-            {/* <h1>HOME</h1> */}
 
             <form action="" onSubmit={
                 (e) => {
