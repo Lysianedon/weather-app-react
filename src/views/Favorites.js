@@ -3,7 +3,6 @@ import { useContext, useEffect, useState, createContext } from 'react'
 //UseContext allContexts : 
 import {AllContexts} from '../App'
 import styled from "styled-components"; //Style library
-import Card from '../components/Card';
 
 export const FavCitiesCards = createContext();
 
@@ -12,11 +11,11 @@ export default function Favorites() {
   const allContexts = useContext(AllContexts);
 
   const [favoriteCities, setFavoriteCities] = useState([]);
-
+  let listFavoritesArray = [];
     
   useEffect(() => {
 
-    const listFavoritesArray = allContexts.listFavorites.split(',');
+    listFavoritesArray = allContexts.listFavorites.split(',');
 
       for (let i = 0; i < listFavoritesArray.length; i++) {
         
@@ -27,13 +26,18 @@ export default function Favorites() {
 
           const copyFavorites = favoriteCities;
           copyFavorites.push(res);
-          setFavoriteCities([copyFavorites])
+          setFavoriteCities(copyFavorites)
+          let icon = document.querySelector('.weather-icon');
+          // icon.style.display = "block";
+          // icon.innerHTML= `<img src="http://openweathermap.org/img/w/${res.weather[0].icon}.png" alt="weather-icon"/>`
+          console.log("the weather icon: ",icon);
         })
         
       }
       console.log("test favoritescities: ", favoriteCities);
 
-  }, [allContexts.favorites])
+
+  }, [allContexts.isFavorite])
 
 
   const value = {
@@ -42,42 +46,44 @@ export default function Favorites() {
   }
 
   return (
-    <FavCitiesCards.Provider value={value}>
+
     <StyledFavorites>
 
       <h1>FAVORITES </h1>
-
-      {
-        favoriteCities.map((favoriteCity,i) => {
-          console.log("current fav: ",favoriteCities);
-          return   <StyledCard key={favoriteCity[i]}>
-
-                    <h2 key={favoriteCity[i]}>City : {favoriteCity[i].name}</h2>
-                    <div className="weather-infos" key={favoriteCity[i]}>
-                    <h2 key={favoriteCity[i]}>Weather: {favoriteCity[i].weather[0].description} </h2>
-                    <div class="weather-icon" key={favoriteCity[i]}><img src="icons/unknown.png" alt="weather-icon" key={favoriteCity[i]}/></div>
-    
-                    </div>
-    
-                    <h2 key={favoriteCity[i]}>Temperature : {favoriteCity[i].main.temp} °C </h2>
-  
-                 </StyledCard>
-        })
-      }
-
-
-
+        <div className='favoritecards'>
+          {
+            favoriteCities.map((fav)=> {
+              console.log(fav);
+              return <StyledCard> <h2>{fav.name}</h2>
+                            <h3>Weather: {fav.weather[0].description} </h3>
+                            <div className="weather-infos">
+                          <h3 className='lastH3'>Temperature: {fav.main.temp} °C</h3>
+                          {/* <div class="weather-icon"><img src={`http://openweathermap.org/img/w/${fav.weather[0].icon}`} alt="weather icon"/></div> */}
+                          {/* <div class="weather-icon"></div> */}
+                        </div>
+                    </StyledCard>
+            })
+          } 
+          </div>
 
     </StyledFavorites>
-    </FavCitiesCards.Provider>
+
   )
 }
 
-const StyledFavorites = styled.div`
+// ----------------------- Styled Components -----------------------
 
-height: 75vh;
+const StyledFavorites = styled.div`
+height: 100vh;
+display: flex;
+flex-direction: column;
+
 
 .weather-infos {
+  display: flex;
+}
+
+.favoritecards{
   display: flex;
 }
 
@@ -86,7 +92,8 @@ height: 75vh;
 const StyledCard = styled.div`
 border: 1px solid black;
 width: 30%;
-margin: auto;
+margin: 2% 4%;
+height: 30vh;
 padding: 6% 5%;
 border-radius: 5px;
 color: white;

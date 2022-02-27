@@ -12,6 +12,7 @@ export default function Home() {
     //DISPLAYING PARIS WEATHER BY DEFAULT :
     useEffect (() => {
 
+        // console.log("ajout objet city: ", allContexts.favorites.favoriteCitiesObjects);
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${allContexts.city}&units=metric&appid=3ba0e4bcb575e9fa5452e20b8284a174`)
         .then(res => res.json())
         .then(res => {
@@ -60,6 +61,7 @@ export default function Home() {
                     allContexts.setFavorites({
                         isFavorite : false,
                         id : [...allContexts.favorites.id],
+                        // favoriteCities : [...allContexts.favorites.favoriteCities],
                     })
                     //If the city is already in the user's favorites, a notification is displayed
                     if (allContexts.favorites.id.includes(res.id)) {
@@ -68,18 +70,25 @@ export default function Home() {
                         setTimeout(() => {
                             document.querySelector('.error').style.display = "none";
                         }, 1500);
+                        
+                    } else if (allContexts.favorites.id.length === 3 ) {
 
+                        document.querySelector('.errorLengthFav').style.display = "initial";
+                        setTimeout(() => {
+                            document.querySelector('.errorLengthFav').style.display = "none";
+                        }, 1500);
+                        
                     } else {
-
-                        // console.log("id favoris ",favorites.id);
+                        
                         allContexts.setFavorites({
                             isFavorite : false,
                             id : [...allContexts.favorites.id, res.id],
+                            // favoriteCities : [...allContexts.favorites.favoriteCities, res],
                         })
-
+                        
                         //Adding it to the localStorage,
                         localStorage.setItem("listFavorites", allContexts.id);
-
+                        
                         document.querySelector('.success').style.display = "initial";
                         setTimeout(() => {
                             document.querySelector('.success').style.display = "none";
@@ -92,9 +101,11 @@ export default function Home() {
                 const icon = allContexts.cityInfos.icon;
                 locationIcon.innerHTML = `<img src="http://openweathermap.org/img/w/${icon}.png">`
                 locationIcon.style.display = "initial";
+
             }
-        
+            
             localStorage.setItem("listFavorites", allContexts.id);
+            console.log("check local storage: ", allContexts.listFavorites);
             
         //Guard
         }).catch(err => {
@@ -106,7 +117,7 @@ export default function Home() {
             }, 1500);
         })
 
-    }, [allContexts.city,allContexts.favorites])
+    }, [allContexts.city,allContexts.favorites, allContexts.favorites.id])
 
 
   return (
@@ -148,6 +159,7 @@ export default function Home() {
                 {/* HIDDEN NOTIFICATION MESSAGES */}
                 <p style={{display: `${allContexts.displayError}`,}}>Error : Please enter a correct city name.</p>
                 <p className="error" style={{display: "none",}}>This city is already in your favorites</p>
+                <p className="errorLengthFav" style={{display: "none",}}>Error : you can add 3 favorite cities maximum.</p>
                 <p className="success" style={{display: "none",}}>Added to your favorites !</p>
             </GeneralContent>
 
